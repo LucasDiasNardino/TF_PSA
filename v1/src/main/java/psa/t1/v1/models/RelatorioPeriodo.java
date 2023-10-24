@@ -1,5 +1,7 @@
 package psa.t1.v1.models;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RelatorioPeriodo {
     
-    private Data dataInicio;
-    private Data dataFim;
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
 }

@@ -1,6 +1,6 @@
 package psa.t1.v1.models;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,6 +23,6 @@ public class Reembolso {
 
     private String descricao;
     private long valor;
-    private Data data;
+    private LocalDate data;
     private Estado estado;
 }
