@@ -19,12 +19,12 @@ import psa.t1.v1.repository.ReembolsoRepository;
 public class ReembolsoController {
 
     @Autowired
-    private ReembolsoRepository atividadeRepository;
+    private ReembolsoRepository reembolsoRepository;
     
     @PostMapping("/cadastrar")
     public ResponseEntity<Reembolso> cadastrar(@RequestBody Reembolso payload) {
 
-        atividadeRepository.save(payload);
+        reembolsoRepository.save(payload);
 
         return ResponseEntity.ok(payload);
     }
@@ -32,7 +32,7 @@ public class ReembolsoController {
     @GetMapping("/listar")
     public ResponseEntity<Iterable<Reembolso>> listar() {
 
-        Iterable<Reembolso> atividades = atividadeRepository.findAll();
+        Iterable<Reembolso> atividades = reembolsoRepository.findAll();
 
         return ResponseEntity.ok(atividades);
     }
@@ -40,8 +40,16 @@ public class ReembolsoController {
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Reembolso> buscar(@PathVariable String id) {
 
-        Reembolso atividade = atividadeRepository.findById(id).get();
+        Reembolso atividade = reembolsoRepository.findById(id).get();
 
         return ResponseEntity.ok(atividade);
+    }
+
+    @GetMapping("/deletar/{id}")
+    public ResponseEntity<String> deletar(@PathVariable String id) {
+
+        reembolsoRepository.deleteById(id);
+
+        return ResponseEntity.ok("Deletado");
     }
 }
