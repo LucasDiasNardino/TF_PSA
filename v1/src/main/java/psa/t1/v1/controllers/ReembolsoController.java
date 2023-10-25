@@ -2,8 +2,11 @@ package psa.t1.v1.controllers;
 
 
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,12 @@ public class ReembolsoController {
     
     @PostMapping("/cadastrar")
     public ResponseEntity<Reembolso> cadastrar(@RequestBody Reembolso payload) {
+
+        if(payload.getData() == null) {
+            payload.setData(LocalDate.now());
+        }
+
+        payload.setEstado("Pendente");
 
         reembolsoRepository.save(payload);
 
@@ -45,7 +54,7 @@ public class ReembolsoController {
         return ResponseEntity.ok(atividade);
     }
 
-    @GetMapping("/deletar/{id}")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<String> deletar(@PathVariable String id) {
 
         reembolsoRepository.deleteById(id);

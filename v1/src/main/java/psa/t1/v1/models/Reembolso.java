@@ -25,4 +25,14 @@ public class Reembolso {
     private long valor;
     private LocalDate data;
     private Estado estado;
+    
+    public void setEstado(String string) {
+        if(string.equals("Pendente")) {
+            this.estado = Estado.Pendente;
+        } else if(string.equals("Aprovado")) {
+            this.estado = Estado.Aprovado;
+        } else if(string.equals("Reprovado")) {
+            this.estado = Estado.Reprovado;
+        }
+    }
 }
