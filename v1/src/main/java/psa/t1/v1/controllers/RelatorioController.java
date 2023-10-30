@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,29 +23,32 @@ public class RelatorioController {
     @Autowired
     private ReembolsoRepository reembolsoRepository;
 
-    public ResponseEntity<Iterable<Reembolso>> buscaPorData(@RequestBody RelatorioPeriodo payload) {
+    @GetMapping("/buscaPorData")
+    public ResponseEntity<Iterable<Reembolso>> buscaPorData(@RequestBody RelatorioPeriodo relatorioPeriodo) {
+
+        /**
+         * DANDO PROBLEMA QUANDO PASSA AS DUAS DATAS
+         */
+
 
         List<Reembolso> reembolsos = reembolsoRepository.findAll();
         
-        LocalDate dataInicio = payload.getDataInicio();
-        LocalDate dataFim = payload.getDataFim();
+        relatorioPeriodo.checkDates();
+
+        LocalDate dataInicio = relatorioPeriodo.getDataInicio();
+        LocalDate dataFim = relatorioPeriodo.getDataFim();
+
+        if (dataInicio.isAfter(dataFim)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         for (Reembolso reembolso : reembolsos) {
-            LocalDate dataReembolso = reembolso.getData();
-
-            if(dataInicio == null) {
-                dataInicio = LocalDate.of(1900, 1, 1);
-            }
-
-            if(dataFim == null) {
-                dataFim = LocalDate.of(2100, 1, 1);
-            }            
+            LocalDate dataReembolso = reembolso.getData();          
             
             if (dataReembolso.isBefore(dataInicio) || dataReembolso.isAfter(dataFim)) {
                 reembolsos.remove(reembolso);
             }
         }
-
 
         return ResponseEntity.ok(reembolsos);
     }
