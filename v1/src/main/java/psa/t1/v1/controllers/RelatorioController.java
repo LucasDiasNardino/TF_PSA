@@ -2,6 +2,7 @@ package psa.t1.v1.controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,7 @@ public class RelatorioController {
 
     @GetMapping("/buscaPorData")
     public ResponseEntity<Iterable<Reembolso>> buscaPorData(@RequestBody RelatorioPeriodo relatorioPeriodo) {
-
-        /**
-         * DANDO PROBLEMA QUANDO PASSA AS DUAS DATAS
-         */
-
-
+        
         List<Reembolso> reembolsos = reembolsoRepository.findAll();
         
         relatorioPeriodo.checkDates();
@@ -42,14 +38,15 @@ public class RelatorioController {
             return ResponseEntity.badRequest().build();
         }
 
-        for (Reembolso reembolso : reembolsos) {
+        Iterator<Reembolso> iterator = reembolsos.iterator();
+        while (iterator.hasNext()) {
+            Reembolso reembolso = iterator.next();
             LocalDate dataReembolso = reembolso.getData();          
             
             if (dataReembolso.isBefore(dataInicio) || dataReembolso.isAfter(dataFim)) {
-                reembolsos.remove(reembolso);
+                iterator.remove();
             }
         }
-
         return ResponseEntity.ok(reembolsos);
     }
 }
