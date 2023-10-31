@@ -37,4 +37,22 @@ public class AdminController {
 
         return ResponseEntity.ok("Reembolso aprovado com sucesso!");
     }
+
+    @PostMapping("/reprovar/{id}")
+    public ResponseEntity<String> reprovar(@PathVariable String id) {
+        Reembolso reembolso = reembolsoRepository.findById(id).get();
+
+        if(reembolso == null) {
+            return ResponseEntity.badRequest().body("Reembolso não encontrado!");
+        }
+
+        if(reembolso.getEstado() != Estado.Pendente) {
+            return ResponseEntity.badRequest().body("Reembolso não está pendente!");
+        }
+
+        reembolso.setEstado("Reprovado");
+        reembolsoRepository.save(reembolso);
+
+        return ResponseEntity.ok("Reembolso reprovado com sucesso!");
+    }
 }
