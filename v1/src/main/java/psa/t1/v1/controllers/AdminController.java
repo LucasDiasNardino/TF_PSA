@@ -39,7 +39,7 @@ public class AdminController {
     }
 
     @PostMapping("/reprovar/{id}")
-    public ResponseEntity<String> reprovar(@PathVariable String id) {
+    public ResponseEntity<String> reprovar(@PathVariable String id, @PathVariable String motivoReprovacao) {
         Reembolso reembolso = reembolsoRepository.findById(id).get();
 
         if(reembolso == null) {
@@ -51,6 +51,7 @@ public class AdminController {
         }
 
         reembolso.setEstado("Reprovado");
+        reembolso.setMotivoReprovacao(motivoReprovacao);
         reembolsoRepository.save(reembolso);
 
         return ResponseEntity.ok("Reembolso reprovado com sucesso!");

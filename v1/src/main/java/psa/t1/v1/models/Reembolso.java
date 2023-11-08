@@ -25,6 +25,8 @@ public class Reembolso {
     private long valor;
     private LocalDate data;
     private Estado estado;
+
+    public String motivoReprovacao;
     
     public void setEstado(String string) {
         if(string.equals("Pendente")) {
