@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import psa.t1.v1.models.Reembolso;
 import psa.t1.v1.models.RelatorioPeriodo;
+import psa.t1.v1.models.RelatorioTabela;
 import psa.t1.v1.repository.ReembolsoRepository;
 
 @RestController
@@ -49,4 +50,43 @@ public class RelatorioController {
         }
         return ResponseEntity.ok(reembolsos);
     }
+
+    /*
+     * TODO: Stream nos reembolsos e tratar os dados
+     * TODO: Implementar dados no json DadosTabela
+     * TODO: No front converter json para csv e visualizar como tabela
+     */
+    @GetMapping("/tabelaPorData")
+    public ResponseEntity<RelatorioTabela> tabelaPorData(@RequestBody RelatorioPeriodo relatorioPeriodo) {
+        
+        List<Reembolso> reembolsos = reembolsoRepository.findAll();
+        
+        relatorioPeriodo.checkDates();
+
+        LocalDate dataInicio = relatorioPeriodo.getDataInicio();
+        LocalDate dataFim = relatorioPeriodo.getDataFim();
+
+        if (dataInicio.isAfter(dataFim)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Iterator<Reembolso> iterator = reembolsos.iterator();
+        while (iterator.hasNext()) {
+            Reembolso reembolso = iterator.next();
+            LocalDate dataReembolso = reembolso.getData();          
+            
+            if (dataReembolso.isBefore(dataInicio) || dataReembolso.isAfter(dataFim)) {
+                iterator.remove();
+            }
+        }
+
+        
+
+
+
+        return ResponseEntity.ok(new RelatorioTabela());
+    }
+
+
+    
 }
