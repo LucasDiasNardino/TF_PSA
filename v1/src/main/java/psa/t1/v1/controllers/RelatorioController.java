@@ -59,32 +59,11 @@ public class RelatorioController {
     @GetMapping("/tabelaPorData")
     public ResponseEntity<RelatorioTabela> tabelaPorData(@RequestBody RelatorioPeriodo relatorioPeriodo) {
         
-        List<Reembolso> reembolsos = reembolsoRepository.findAll();
-        
-        relatorioPeriodo.checkDates();
+        RelatorioTabela relatorioTabela = new RelatorioTabela();
 
-        LocalDate dataInicio = relatorioPeriodo.getDataInicio();
-        LocalDate dataFim = relatorioPeriodo.getDataFim();
+        relatorioTabela.fetch();
 
-        if (dataInicio.isAfter(dataFim)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Iterator<Reembolso> iterator = reembolsos.iterator();
-        while (iterator.hasNext()) {
-            Reembolso reembolso = iterator.next();
-            LocalDate dataReembolso = reembolso.getData();          
-            
-            if (dataReembolso.isBefore(dataInicio) || dataReembolso.isAfter(dataFim)) {
-                iterator.remove();
-            }
-        }
-
-        
-
-
-
-        return ResponseEntity.ok(new RelatorioTabela());
+        return ResponseEntity.ok(relatorioTabela);    
     }
 
 
