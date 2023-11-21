@@ -61,7 +61,28 @@ public class RelatorioController {
         
         RelatorioTabela relatorioTabela = new RelatorioTabela();
 
-        relatorioTabela.fetch();
+        List<Reembolso> reembolsos = reembolsoRepository.findAll();
+        
+        relatorioPeriodo.checkDates();
+
+        LocalDate dataInicio = relatorioPeriodo.getDataInicio();
+        LocalDate dataFim = relatorioPeriodo.getDataFim();
+
+        if (dataInicio.isAfter(dataFim)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Iterator<Reembolso> iterator = reembolsos.iterator();
+        while (iterator.hasNext()) {
+            Reembolso reembolso = iterator.next();
+            LocalDate dataReembolso = reembolso.getData();          
+            
+            if (dataReembolso.isBefore(dataInicio) || dataReembolso.isAfter(dataFim)) {
+                iterator.remove();
+            }
+        }
+
+        relatorioTabela.fetch(reembolsoRepository);
 
         return ResponseEntity.ok(relatorioTabela);    
     }

@@ -9,6 +9,11 @@ import psa.t1.v1.models.Reembolso;
 
 public interface ReembolsoRepository extends MongoRepository<Reembolso, String>{
 
+    /*
+     * Consultar no banco elementos do intervalo
+     * Retornar lista
+     */
+
     @Query("{'estado': 'Aprovado'}")
     List<Reembolso> countByStatusAprovado();
 

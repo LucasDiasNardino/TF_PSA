@@ -16,10 +16,6 @@ import psa.t1.v1.repository.ReembolsoRepository;
 @NoArgsConstructor
 public class RelatorioTabela {
 
-    @JsonIgnore
-    @Autowired
-    private ReembolsoRepository reembolsoRepository;
-
     // quantidade, porcentagem e  valor  total dos  pedidos  aprovados  e  dos pedidos  negados em  um período    
     private long quantidadePedidosAprovados;
     private long quantidadePedidosNegados;
@@ -28,15 +24,15 @@ public class RelatorioTabela {
     private double porcentagemPedidosAprovados;
     private double porcentagemPedidosNegados;
 
-    public void fetch(){
+    public void fetch(ReembolsoRepository reembolsoRepository){
 
         long qtdReembolsos = reembolsoRepository.count();
 
         /*
          * quantidades
          */
-        this.setPorcentagemPedidosAprovados(reembolsoRepository.countByStatusAprovado().size());
-        this.setPorcentagemPedidosNegados(reembolsoRepository.countByStatusReprovado().size());
+        this.setQuantidadePedidosAprovados(reembolsoRepository.countByStatusAprovado().size());
+        this.setQuantidadePedidosNegados(reembolsoRepository.countByStatusReprovado().size());
 
 
         /*
