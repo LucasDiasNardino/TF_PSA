@@ -59,10 +59,8 @@ public class RelatorioController {
     @GetMapping("/tabelaPorData")
     public ResponseEntity<RelatorioTabela> tabelaPorData(@RequestBody RelatorioPeriodo relatorioPeriodo) {
         
-        RelatorioTabela relatorioTabela = new RelatorioTabela();
-
         List<Reembolso> reembolsos = reembolsoRepository.findAll();
-        
+
         relatorioPeriodo.checkDates();
 
         LocalDate dataInicio = relatorioPeriodo.getDataInicio();
@@ -82,6 +80,8 @@ public class RelatorioController {
             }
         }
 
+        
+        RelatorioTabela relatorioTabela = new RelatorioTabela();
         relatorioTabela.fetch(reembolsoRepository);
 
         return ResponseEntity.ok(relatorioTabela);    
