@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Solicitação de Reembolso de Despesas</title>
+        <!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="../css/reembolso-pendente.css"
+        />
+
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <!-- {style="background-color: #eeeeee"} -->
+        <div class="w-100 h-100 p-3">
+            <div id="buttons">
+                <button
+                    id="btn-cadastrar"
+                    type="button"
+                    class="btn btn-light btn-lg btn-block"
+                    onclick="window.location.href = 'cadastro-reembolso.html'"
+                >
+                    Cadastrar Reembolso
+                </button>
+
+                <button
+                    id="btn-cadastrar"
+                    type="button"
+                    class="btn btn-light btn-lg btn-block"
+                    onclick="window.location.href = 'login-gerente.html'"
+                >
+                    Aprovar/Reprovar
+                </button>
+
+                <button
+                    id="btn-cadastrar"
+                    type="button"
+                    class="btn btn-light btn-lg btn-block"
+                    onclick="window.location.href = 'login.html'"
+                >
+                    Sair
+                </button>
+            </div>
+
+            <div class="d-flex justify-content-center py-5">
+                <h1>Reembolsos Pendentes</h1>
+            </div>
+
+            <table class="table table-hover w-75 m-auto text-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Aprovar/Reprovar</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <script src="../javascript/reembolso-pendente.js"></script>
+    </body>
+</html>
