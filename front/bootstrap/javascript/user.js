@@ -58,9 +58,8 @@ function atualizarLista() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Chamar a função inicialmente e a cada 5 segundos
+    // Chamar a função inicialmente 
     atualizarLista();
-    setInterval(atualizarLista, 5000);
 
     // Adicionar um evento de clique ao botão
     var btnAtualizar = document.getElementById('atualizarBtn');
