@@ -38,16 +38,25 @@ document.getElementById("loginBut").addEventListener("click", function () {
     }).then(function (response) {
         if (response.ok) {
             console.log("Resposta ok");
-            return response.json();
+            return response.text();
         } else {
             console.log("Resposta de erro do servidor");
             return Promise.reject(response);
         }
     }).then(function (data) {
-        console.log("JSON recebido:", data);
+        console.log("Resposta:", data);
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", data.user);
-        window.location.href = "login.html";
+        
+        if(data == "admin"){
+            window.location.href = "admin.html";
+        }
+
+        if(data == "user"){
+            window.location.href = "user.html";
+        }
+
+
     }).catch(function (error) {
         console.log("Erro ao receber JSON:", error);
         alert("Erro no login!");
