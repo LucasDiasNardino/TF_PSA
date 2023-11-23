@@ -24,6 +24,29 @@ function atualizarEstadoBotao() {
 *  Busca os reembolsos no banco e adiciona na lista
 */
 
+function formatarData(dataString) {
+    // Verificar se a data já está no formato esperado (DD/MM/YYYY)
+    const regexData = /^\d{2}\/\d{2}\/\d{4}$/;
+
+    if (regexData.test(dataString)) {
+        return dataString;
+    }
+
+    // Se a dataString for uma instância de Date, formatar diretamente
+    const data = new Date(dataString);
+    if (!isNaN(data.getTime())) {
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = String(data.getFullYear());
+
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    // Se não for possível formatar, retornar 'Data Inválida'
+    return 'Data Inválida';
+}
+
+
 function atualizarLista() {
     fetch('http://localhost:8080/reembolso/listar', {
         method: 'GET',
@@ -40,16 +63,29 @@ function atualizarLista() {
     })
     .then(data => {
         // Limpar a lista existente
-        var listaReembolsos = document.getElementById('reembolsos');
-        listaReembolsos.innerHTML = '';
+        var tbodyReembolsos = document.getElementById('tbodyReembolsos');
+        tbodyReembolsos.innerHTML = '';
 
-        // Iterar sobre os reembolsos e adicionar elementos à lista
-        data.forEach(reembolso => {
-            // Adicionar apenas os campos desejados à lista
-            var li = document.createElement('li');
-            li.textContent = `Descrição: ${reembolso.descricao}, Data: ${reembolso.data}, Estado: ${reembolso.estado}`;
-            li.classList.add('list-group-item');
-            listaReembolsos.appendChild(li);
+        data.forEach((reembolso, index) => {
+            var linha = document.createElement('tr');
+
+            var classeEstado = '';
+
+            if (reembolso.estado === 'Aprovado') {
+                classeEstado = 'table-success';
+            }
+            else if (reembolso.estado === 'Reprovado') {
+                classeEstado = 'text-danger';
+            }
+
+
+            linha.innerHTML = `
+                <td>${reembolso.valor}</td>
+                <td>${reembolso.descricao}</td>
+                <td>${formatarData(reembolso.data)}</td>
+                <td class="${classeEstado}">${reembolso.estado}</td>
+            `;
+            tbodyReembolsos.appendChild(linha);
         });
     })
     .catch(error => {
@@ -60,6 +96,8 @@ function atualizarLista() {
 document.addEventListener('DOMContentLoaded', function() {
     // Chamar a função inicialmente 
     atualizarLista();
+    //setInterval(atualizarLista, 5000);
+
 
     // Adicionar um evento de clique ao botão
     var btnAtualizar = document.getElementById('atualizarBtn');
