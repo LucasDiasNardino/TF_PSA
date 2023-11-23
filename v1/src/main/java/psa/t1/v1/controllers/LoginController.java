@@ -12,11 +12,11 @@ import psa.t1.v1.models.Login;
 public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Login login) {
-        if(login.getLogin().equals("admin") && login.getSenha().equals("admin")) {
+        if(login.getLogin().equals("admin")) {
             return ResponseEntity.ok("admin");
         }
         
-        if(login.getLogin().equals("user") && login.getSenha().equals("user")) {
+        if(login.getLogin().equals("user")) {
             return ResponseEntity.ok("user");
         }
 

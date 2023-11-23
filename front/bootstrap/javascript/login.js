@@ -16,6 +16,7 @@ function atualizarEstadoBotao() {
     // Habilita o botão se ambos os campos estiverem preenchidos, caso contrário, desabilita
     loginButton.disabled = !(loginPreenchido && passwordPreenchido);
 }
+
 document.getElementById("loginBut").addEventListener("click", function () {
     var login = document.getElementById("login").value;
     var password = document.getElementById("password").value;
