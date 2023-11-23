@@ -22,8 +22,34 @@ document.getElementById("loginBut").addEventListener("click", function () {
 
     var dados = {
         login: login,
-        password: password
+        senha: password
     };
 
     console.log("Dados submetidos:", dados);
+
+    fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify(dados)
+
+    }).then(function (response) {
+        if (response.ok) {
+            console.log("Resposta ok");
+            return response.json();
+        } else {
+            console.log("Resposta de erro do servidor");
+            return Promise.reject(response);
+        }
+    }).then(function (data) {
+        console.log("JSON recebido:", data);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", data.user);
+        window.location.href = "login.html";
+    }).catch(function (error) {
+        console.log("Erro ao receber JSON:", error);
+        alert("Erro no login!");
+    })
 });
