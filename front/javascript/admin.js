@@ -77,6 +77,10 @@ function atualizarLista() {
                     <td class="${classeEstado}"><button id="aprovar" type="button" class="btn btn-success ml-auto">Aprovar</button><button id="reprovar" type="button" class="btn btn-danger ml-auto">Reprovar</button></td>
                 `;
                 tbodyReembolsos.appendChild(linha);
+
+                var id = reembolso.id;
+
+                reprovarBotao();
             }
             
         });
@@ -90,14 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Chamar a função inicialmente 
     atualizarLista();
     //setInterval(atualizarLista, 5000);
-
-
-    // Adicionar um evento de clique ao botão
-    var btnAtualizar = document.getElementById('atualizarBtn');
-    btnAtualizar.addEventListener('click', function() {
-        // Chamar a função ao clicar no botão
-        atualizarLista();
-    });
 });
 
 
@@ -107,25 +103,60 @@ document.addEventListener('DOMContentLoaded', function() {
 function reprovarBotao(){
     var reprovar = document.getElementById("reprovar");
     reprovar.addEventListener("click", function(){
-        reprovar();
+        console.log("clicou"); 
+        reprovar.disabled
+        criaEntrada();
     });
 }
 
-function reprovar() {
+function criaEntrada() {
+    console.log("cria entrada");
     var divEntrada = document.getElementById("motivo");
     
-    var caixaTexto = document.createElement("div");
-    caixaTexto.innerHTML = `<span class="input-group-text" id="inputGroup-sizing-default">Motivo da Reprovação:</span>
-    <input id="texto" ype="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">`;
+    divEntrada.innerHTML = '';
+
+    entrada = document.createElement('div');
     
-    divEntrada.appendChild(caixaTexto);
+    entrada.innerHTML = `
+    <input id="textoMotivo" type="text" class="form-control" placeholder="Descreva Brevemente o Motivo da Recusa" aria-label="Recipient's username" aria-describedby="button-addon2">
+    <button id="submeter" class="btn btn-outline-secondary" type="button" id="button-addon2">Submeter</button>
+    `;
 
-    var motivo = document.getElementById("texto")
-
-    var preenchido = motivo.value.trim() !== "";
-    
-    loginButton.disabled = !(preenchido);
-
-    //*FAZER PUT PARA ALTERAR REEMBOLSO
-
+    divEntrada.appendChild(entrada);   
 }
+
+/**
+ * SUBMETE MOTIVO
+ */
+
+document.getElementById("motivo").addEventListener("click", function () {
+    var motivo = document.getElementById("textoMotivo").value;
+
+    var dados = {
+        motivo: motivo
+    };
+
+    console.log("Dados submetidos:", dados);
+
+    fetch('http://localhost:8080/reembolso/reprovar/'+id, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify(dados)
+
+    }).then(function (response) {
+        if (response.ok) {
+            console.log("Resposta ok");
+            return response.text();
+        } else {
+            console.log("Resposta de erro do servidor");
+            return Promise.reject(response);
+        }
+    }).then(function (data) {
+        console.log("Resposta:", data);
+        window.location.href = "admin.html";
+    }).catch(function (error) {
+        console.error(error);
+    });});
