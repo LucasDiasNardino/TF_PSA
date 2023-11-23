@@ -16,10 +16,8 @@ public class LoginController {
             return ResponseEntity.ok("admin");
         }
         
-        if(login.getLogin().equals("user")) {
+        else {
             return ResponseEntity.ok("user");
         }
-
-        return ResponseEntity.badRequest().body("Login inválido");
     }
 }

@@ -53,8 +53,8 @@ document.getElementById("loginBut").addEventListener("click", function () {
             window.location.href = "admin.html";
         }
 
-        if(data == "user"){
-            window.location.href = "user.html";
+        else{
+            window.location.href = "user.html?username="+encodeURIComponent(login);
         }
 
 

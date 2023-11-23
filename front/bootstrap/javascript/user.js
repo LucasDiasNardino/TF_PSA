@@ -1,3 +1,14 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Obter o nome de usuário da URL
+    var urlParams = new URLSearchParams(window.location.search);
+    var username = urlParams.get('username');
+
+    welcome = document.getElementById("welcome");
+
+    welcome.textContent = "Bem vindo, " + username + "!";
+});
+
+
 var sairBut = document.getElementById("sair");
 
 document.getElementById("sair").addEventListener("click", function () {
@@ -26,7 +37,11 @@ document.getElementById("enviar").addEventListener("click", function () {
     var valor = document.getElementById("valor").value;
     var descricao = document.getElementById("descricao").value;
 
+    var urlParams = new URLSearchParams(window.location.search);
+    var user = urlParams.get('username');
+
     var dados = {
+        user: user,
         valor: valor,
         descricao: descricao
     };
@@ -52,7 +67,7 @@ document.getElementById("enviar").addEventListener("click", function () {
 
     }).then(function (data) {
         console.log("Resposta:", data);
-        window.location.href = "user.html";
+        window.location.href = "user.html?username="+encodeURIComponent(user);
     }).catch(function (error) {
         console.log("Erro ao receber JSON:", error);
     });
@@ -108,26 +123,39 @@ function atualizarLista() {
         var tbodyReembolsos = document.getElementById('tbodyReembolsos');
         tbodyReembolsos.innerHTML = '';
 
+        var urlParams = new URLSearchParams(window.location.search);
+        var user = urlParams.get('username');
+
+        console.log(user);
+
+        
+
         data.forEach((reembolso, index) => {
-            var linha = document.createElement('tr');
+            console.log(reembolso.user);
+            if(reembolso.user == user){
+                var linha = document.createElement('tr');
 
-            var classeEstado = '';
+                var classeEstado = '';
 
-            if (reembolso.estado === 'Aprovado') {
-                classeEstado = 'table-success';
+                if (reembolso.estado === 'Aprovado') {
+                    classeEstado = 'table-success';
+                }
+                else if (reembolso.estado === 'Reprovado') {
+                    classeEstado = 'text-danger';
+                }
+
+                console.log(reembolso.usuario);
+
+
+                linha.innerHTML = `
+                    <td>R$${reembolso.valor}</td>
+                    <td>${reembolso.descricao}</td>
+                    <td>${formatarData(reembolso.data)}</td>
+                    <td class="${classeEstado}">${reembolso.estado}</td>
+                `;
+                tbodyReembolsos.appendChild(linha);
             }
-            else if (reembolso.estado === 'Reprovado') {
-                classeEstado = 'text-danger';
-            }
-
-
-            linha.innerHTML = `
-                <td>R$${reembolso.valor}</td>
-                <td>${reembolso.descricao}</td>
-                <td>${formatarData(reembolso.data)}</td>
-                <td class="${classeEstado}">${reembolso.estado}</td>
-            `;
-            tbodyReembolsos.appendChild(linha);
+            
         });
     })
     .catch(error => {

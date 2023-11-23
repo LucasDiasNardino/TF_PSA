@@ -21,6 +21,8 @@ public class Reembolso {
     @Id
     private String id;
 
+    private String user;
+
     private String descricao;
     private long valor;
     private LocalDate data;
