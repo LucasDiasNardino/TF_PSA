@@ -18,6 +18,47 @@ function atualizarEstadoBotao() {
     enviarBut.disabled = !(valorPreenchido && descricaoPreenchido);
 }
 
+/**
+ * Função para enviar os dados do formulário para o servidor
+ */
+
+document.getElementById("enviar").addEventListener("click", function () {
+    var valor = document.getElementById("valor").value;
+    var descricao = document.getElementById("descricao").value;
+
+    var dados = {
+        valor: valor,
+        descricao: descricao
+    };
+
+    console.log("Dados submetidos:", dados);
+
+    fetch('http://localhost:8080/reembolso/cadastrar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify(dados)
+
+    }).then(function (response) {
+        if (response.ok) {
+            console.log("Resposta ok");
+            return response.text();
+        } else {
+            console.log("Resposta de erro do servidor");
+            return Promise.reject(response);
+        }
+
+    }).then(function (data) {
+        console.log("Resposta:", data);
+        window.location.href = "user.html";
+    }).catch(function (error) {
+        console.log("Erro ao receber JSON:", error);
+    });
+});
+
+
 
 
 /*
@@ -62,6 +103,7 @@ function atualizarLista() {
         return response.json();
     })
     .then(data => {
+        data.sort((a, b) => new Date(b.data) - new Date(a.data));
         // Limpar a lista existente
         var tbodyReembolsos = document.getElementById('tbodyReembolsos');
         tbodyReembolsos.innerHTML = '';
@@ -80,7 +122,7 @@ function atualizarLista() {
 
 
             linha.innerHTML = `
-                <td>${reembolso.valor}</td>
+                <td>R$${reembolso.valor}</td>
                 <td>${reembolso.descricao}</td>
                 <td>${formatarData(reembolso.data)}</td>
                 <td class="${classeEstado}">${reembolso.estado}</td>
