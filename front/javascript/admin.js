@@ -53,7 +53,6 @@ function atualizarLista() {
         tbodyReembolsos.innerHTML = '';        
 
         data.forEach((reembolso, index) => {
-            console.log(reembolso.user);
             if(reembolso.user != null){
                 var linha = document.createElement('tr');
 
@@ -66,21 +65,26 @@ function atualizarLista() {
                     classeEstado = 'text-danger';
                 }
 
-                
+                var id = reembolso.id;
 
 
                 linha.innerHTML = `
+                    <td class="idReembolso" id="${id}">${index + 1}</td>
                     <td>${reembolso.user.toUpperCase()}</td>
                     <td>R$${reembolso.valor}</td>
                     <td>${reembolso.descricao}</td>
                     <td>${formatarData(reembolso.data)}</td>
-                    <td class="${classeEstado}"><button id="aprovar" type="button" class="btn btn-success ml-auto">Aprovar</button><button id="reprovar" type="button" class="btn btn-danger ml-auto">Reprovar</button></td>
+                    <td class="${classeEstado}">
+                        <button id="aprovar${id}" type="button" class="btn btn-success ml-auto">Aprovar</button>
+                        <button id="reprovar${id}" type="button" class="btn btn-danger ml-auto">Reprovar</button>
+                    </td>
                 `;
                 tbodyReembolsos.appendChild(linha);
 
-                var id = reembolso.id;
-
-                reprovarBotao();
+                console.log("Reembolso",id,"criado com sucesso:")
+                
+                aprovarBotao(id);
+                reprovarBotao(id);
             }
             
         });
@@ -96,14 +100,19 @@ document.addEventListener('DOMContentLoaded', function() {
     //setInterval(atualizarLista, 5000);
 });
 
-
-
-
-
-function reprovarBotao(){
-    var reprovar = document.getElementById("reprovar");
+function aprovarBotao(id){
+    var reprovar = document.getElementById("aprovar"+id);
     reprovar.addEventListener("click", function(){
-        console.log("clicou"); 
+        console.log("Aprovar Acionado -ID: "+id); 
+        //reprovar.disabled
+        //criaEntrada();
+    });
+}
+
+function reprovarBotao(id){
+    var reprovar = document.getElementById("reprovar"+id);
+    reprovar.addEventListener("click", function(){
+        console.log("Reprovar Acionado -ID: "+id); 
         reprovar.disabled
         criaEntrada();
     });
