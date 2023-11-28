@@ -9,6 +9,7 @@ import psa.t1.v1.enums.Estado;
 import psa.t1.v1.models.Reembolso;
 import psa.t1.v1.repository.ReembolsoRepository;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -38,8 +39,8 @@ public class AdminController {
         return ResponseEntity.ok("Reembolso aprovado com sucesso!");
     }
 
-    @PostMapping("/reprovar/{id}")
-    public ResponseEntity<String> reprovar(@PathVariable String id, @PathVariable String motivoReprovacao) {
+    @PutMapping("/reprovar/{id}")
+    public ResponseEntity<String> reprovar(@PathVariable String id, @RequestBody String motivoReprovacao) {
         Reembolso reembolso = reembolsoRepository.findById(id).get();
 
         if(reembolso == null) {

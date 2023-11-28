@@ -40,36 +40,38 @@ function atualizarLista() {
             // Adicione outros cabeçalhos conforme necessário
         },
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erro ao obter reembolsos');
-        }
-        return response.json();
-    })
-    .then(data => {
-        data.sort((a, b) => new Date(b.data) - new Date(a.data));
-        // Limpar a lista existente
-        var tbodyReembolsos = document.getElementById('tbodyReembolsos');
-        tbodyReembolsos.innerHTML = '';        
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao obter reembolsos');
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.sort((a, b) => new Date(b.data) - new Date(a.data));
+            // Limpar a lista existente
+            var tbodyReembolsos = document.getElementById('tbodyReembolsos');
+            tbodyReembolsos.innerHTML = '';
 
-        data.forEach((reembolso, index) => {
-            if(reembolso.user != null){
-                var linha = document.createElement('tr');
+            data.forEach((reembolso, index) => {
+                if (reembolso.user != null) {
+                    var linha = document.createElement('tr');
 
-                var classeEstado = '';
+                    linha.id = 'linha' + reembolso.id;
 
-                if (reembolso.estado === 'Aprovado') {
-                    classeEstado = 'table-success';
-                }
-                else if (reembolso.estado === 'Reprovado') {
-                    classeEstado = 'text-danger';
-                }
+                    var classeEstado = '';
 
-                var id = reembolso.id;
+                    if (reembolso.estado === 'Aprovado') {
+                        classeEstado = 'table-success';
+                    }
+                    else if (reembolso.estado === 'Reprovado') {
+                        classeEstado = 'text-danger';
+                    }
+
+                    var id = reembolso.id;
 
 
-                linha.innerHTML = `
-                    <td class="idReembolso" id="${id}">${index + 1}</td>
+                    linha.innerHTML = `
+                    <td>${index + 1}</td>
                     <td>${reembolso.user.toUpperCase()}</td>
                     <td>R$${reembolso.valor}</td>
                     <td>${reembolso.descricao}</td>
@@ -79,93 +81,133 @@ function atualizarLista() {
                         <button id="reprovar${id}" type="button" class="btn btn-danger ml-auto">Reprovar</button>
                     </td>
                 `;
-                tbodyReembolsos.appendChild(linha);
+                    tbodyReembolsos.appendChild(linha);
 
-                console.log("Reembolso",id,"criado com sucesso:")
-                
-                aprovarBotao(id);
-                reprovarBotao(id);
-            }
-            
+                    console.log("Reembolso", id, "criado com sucesso:")
+
+                    aprovarBotao(id);
+                    reprovarBotao(id);
+                }
+
+            });
+        })
+        .catch(error => {
+            console.error(error);
         });
-    })
-    .catch(error => {
-        console.error(error);
-    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Chamar a função inicialmente 
     atualizarLista();
     //setInterval(atualizarLista, 5000);
 });
 
-function aprovarBotao(id){
-    var reprovar = document.getElementById("aprovar"+id);
-    reprovar.addEventListener("click", function(){
-        console.log("Aprovar Acionado -ID: "+id); 
-        //reprovar.disabled
-        //criaEntrada();
+
+var idReembolso;
+
+function aprovarBotao(id) {
+    var reprovar = document.getElementById("aprovar" + id);
+    reprovar.addEventListener("click", function () {
+        console.log("Aprovar Acionado -ID: " + id);
+
     });
 }
 
-function reprovarBotao(id){
-    var reprovar = document.getElementById("reprovar"+id);
-    reprovar.addEventListener("click", function(){
-        console.log("Reprovar Acionado -ID: "+id); 
-        reprovar.disabled
-        criaEntrada();
+var motivoRep;
+var botaoSubmeter;
+
+function atualizaSubmeter(){
+   var descricaoPreenchido = motivoRep.value.trim() !== "";
+   
+   botaoSubmeter.disabled = !descricaoPreenchido;
+    
+}
+
+function reprovarBotao(id) {
+    var reprovar = document.getElementById("reprovar" + id);
+    reprovar.addEventListener("click", function () {
+        console.log("Reprovar Acionado -ID: " + id);
+
+        //deixa botao desabilitado
+        reprovar.disabled = true;
+
+
+
+        console.log("Cria entrada");
+        var divEntrada = document.getElementById("motivo");
+
+        divEntrada.innerHTML = '';
+
+        entrada = document.createElement('div');
+
+        entrada.innerHTML =
+            `
+            <div id="entradaMotivo" class="input-group">
+                <span class="input-group-text">Descreva brevemente o motivo:</span>
+                <textarea id="motivo" class="form-control" aria-label="With textarea"></textarea>
+                <button id="botaoSubmeter" class="btn btn-outline-primary" type="button">Submeter</button>
+            </div>
+            `
+
+        divEntrada.appendChild(entrada);
+
+        
+        var botao = document.getElementById("botaoSubmeter");
+        botaoSubmeter = botao;
+
+        var motivo = document.getElementById("motivo");
+        motivoRep = motivo;
+
+        atualizaSubmeter();
+
     });
 }
 
-function criaEntrada() {
-    console.log("cria entrada");
-    var divEntrada = document.getElementById("motivo");
-    
-    divEntrada.innerHTML = '';
+function putFunc(){
+    document.getElementById("botaoSubmeter").addEventListener("click", function () {
 
-    entrada = document.createElement('div');
+        console.log("Post -ID: " + submeterMotivoID);
     
-    entrada.innerHTML = `
-    <input id="textoMotivo" type="text" class="form-control" placeholder="Descreva Brevemente o Motivo da Recusa" aria-label="Recipient's username" aria-describedby="button-addon2">
-    <button id="submeter" class="btn btn-outline-secondary" type="button" id="button-addon2">Submeter</button>
-    `;
-
-    divEntrada.appendChild(entrada);   
+        var motivo = document.getElementById("motivo").value;
+    
+        console.log("Motivo: " + motivo);
+    
+        var url = 'http://localhost:8080/reembolso/reprovar/' + submeterMotivoID;
+    
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // Adicione outros cabeçalhos conforme necessário
+             },
+                body: JSON.stringify({
+                    descricao: motivo
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao reprovar reembolso');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Reembolso", submeterMotivoID, "reprovado com sucesso:")
+                    console.log(data);
+    
+                    var linha = document.getElementById("linha" + submeterMotivoID);
+    
+                    linha.remove();
+    
+                    var divEntrada = document.getElementById("motivo");
+    
+                    divEntrada.innerHTML = '';
+    
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+    });
 }
 
-/**
- * SUBMETE MOTIVO
- */
 
-document.getElementById("motivo").addEventListener("click", function () {
-    var motivo = document.getElementById("textoMotivo").value;
 
-    var dados = {
-        motivo: motivo
-    };
-
-    console.log("Dados submetidos:", dados);
-
-    fetch('http://localhost:8080/reembolso/reprovar/'+id, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-
-        body: JSON.stringify(dados)
-
-    }).then(function (response) {
-        if (response.ok) {
-            console.log("Resposta ok");
-            return response.text();
-        } else {
-            console.log("Resposta de erro do servidor");
-            return Promise.reject(response);
-        }
-    }).then(function (data) {
-        console.log("Resposta:", data);
-        window.location.href = "admin.html";
-    }).catch(function (error) {
-        console.error(error);
-    });});
