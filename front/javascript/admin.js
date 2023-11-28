@@ -53,7 +53,7 @@ function atualizarLista() {
             tbodyReembolsos.innerHTML = '';
 
             data.forEach((reembolso, index) => {
-                if (reembolso.user != null) {
+                if ((reembolso.user != null) && (reembolso.estado === "Pendente")) {
                     var linha = document.createElement('tr');
 
                     linha.id = 'linha' + reembolso.id;
@@ -109,8 +109,37 @@ function aprovarBotao(id) {
     var reprovar = document.getElementById("aprovar" + id);
     reprovar.addEventListener("click", function () {
         console.log("Aprovar Acionado -ID: " + id);
+        idReembolso = id;
+        aprovar();
 
     });
+}
+
+function aprovar(){
+    var url = 'http://localhost:8080/admin/aprovar/' + idReembolso;
+
+    fetch(url, {
+        method: 'PUT',
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao aprovar reembolso');
+            }
+            // Verifique se a resposta não está vazia antes de fazer o parsing como JSON
+            if (response.status !== 204) {
+                return response.json();
+            }
+    
+            // Se a resposta for vazia (status 204), retorne algo apropriado
+            return null;
+         })
+        .then(data => {
+            // Faça algo com os dados (pode ser null se a resposta foi vazia)
+            console.log(data);
+        })
+        .catch(error => {
+        console.error(error);
+        });
 }
 
 var motivoRep;

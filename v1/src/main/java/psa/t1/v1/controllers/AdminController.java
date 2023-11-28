@@ -21,8 +21,8 @@ public class AdminController {
     @Autowired
     private ReembolsoRepository reembolsoRepository;
 
-    @PostMapping("/aprovar/{id}")
-    public ResponseEntity<String> aprovar(@PathVariable String id) {
+    @PutMapping("/aprovar/{id}")
+    public ResponseEntity<Object> aprovar(@PathVariable String id) {
         Reembolso reembolso = reembolsoRepository.findById(id).get();
 
         if(reembolso == null) {
@@ -36,7 +36,7 @@ public class AdminController {
         reembolso.setEstado("Aprovado");
         reembolsoRepository.save(reembolso);
 
-        return ResponseEntity.ok("Reembolso aprovado com sucesso!");
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/reprovar/{id}")
