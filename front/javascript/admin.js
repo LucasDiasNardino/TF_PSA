@@ -115,7 +115,7 @@ function aprovarBotao(id) {
     });
 }
 
-function aprovar(){
+function aprovar() {
     var url = 'http://localhost:8080/admin/aprovar/' + idReembolso;
 
     fetch(url, {
@@ -129,28 +129,22 @@ function aprovar(){
             if (response.status !== 204) {
                 return response.json();
             }
-    
+
             // Se a resposta for vazia (status 204), retorne algo apropriado
             return null;
-         })
+        })
         .then(data => {
             // Faça algo com os dados (pode ser null se a resposta foi vazia)
             console.log(data);
         })
         .catch(error => {
-        console.error(error);
+            console.error(error);
         });
 }
 
 var motivoRep;
 var botaoSubmeter;
 
-function atualizaSubmeter(){
-   var descricaoPreenchido = motivoRep.value.trim() !== "";
-   
-   botaoSubmeter.disabled = !descricaoPreenchido;
-    
-}
 
 function reprovarBotao(id) {
     var reprovar = document.getElementById("reprovar" + id);
@@ -171,71 +165,89 @@ function reprovarBotao(id) {
 
         entrada.innerHTML =
             `
-            <div id="entradaMotivo" class="input-group">
+            <div class="input-group">
                 <span class="input-group-text">Descreva brevemente o motivo:</span>
-                <textarea id="motivo" class="form-control" aria-label="With textarea"></textarea>
-                <button id="botaoSubmeter" class="btn btn-outline-primary" type="button">Submeter</button>
+                <textarea id="entradaMotivo" class="form-control" aria-label="With textarea"></textarea>
+                <button disabled id="botaoSubmeter" class="btn btn-outline-primary" type="button">Submeter</button>
             </div>
             `
 
+
         divEntrada.appendChild(entrada);
 
-        
+
         var botao = document.getElementById("botaoSubmeter");
         botaoSubmeter = botao;
 
-        var motivo = document.getElementById("motivo");
-        motivoRep = motivo;
+        var motivo = document.getElementById("entradaMotivo");
+        motivoRep = motivo.value;
 
-        atualizaSubmeter();
+
+
+        document.getElementById("botaoSubmeter").addEventListener("click", () => putFunc(id));
+
+
+        motivo.addEventListener("input",  () =>{
+            var text = motivo.value
+
+            if(text != ""){
+                botao.disabled = false;
+            }
+            else{
+                botao.disables = true;
+            }
+
+        });
+
+
 
     });
 }
 
-function putFunc(){
-    document.getElementById("botaoSubmeter").addEventListener("click", function () {
+function putFunc(id) {
+    console.log("Entrou no put")
 
-        console.log("Post -ID: " + submeterMotivoID);
-    
-        var motivo = document.getElementById("motivo").value;
-    
-        console.log("Motivo: " + motivo);
-    
-        var url = 'http://localhost:8080/reembolso/reprovar/' + submeterMotivoID;
-    
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-                // Adicione outros cabeçalhos conforme necessário
-             },
-                body: JSON.stringify({
-                    descricao: motivo
-                })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro ao reprovar reembolso');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Reembolso", submeterMotivoID, "reprovado com sucesso:")
-                    console.log(data);
-    
-                    var linha = document.getElementById("linha" + submeterMotivoID);
-    
-                    linha.remove();
-    
-                    var divEntrada = document.getElementById("motivo");
-    
-                    divEntrada.innerHTML = '';
-    
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-    });
+
+    console.log("Put -ID: " + id);
+
+    var motivo = document.getElementById("entradaMotivo").value;
+
+    console.log("Motivo: " + motivo);
+
+    var url = 'http://localhost:8080/admin/reprovar/' + id;
+
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'text/plain'
+            // Adicione outros cabeçalhos conforme necessário
+        },
+
+        body : motivo
+
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao reprovar reembolso');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Reembolso", id, "reprovado com sucesso:")
+            console.log(data);
+
+            var linha = document.getElementById("linha" + id);
+
+            linha.remove();
+
+            var divEntrada = document.getElementById("motivo");
+
+            divEntrada.innerHTML = '';
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
 
 

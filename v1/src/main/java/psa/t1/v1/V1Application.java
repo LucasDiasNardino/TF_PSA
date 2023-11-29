@@ -11,13 +11,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 @EnableMongoRepositories
 public class V1Application {
 
-
 	public static void main(String[] args) {
 		SpringApplication.run(V1Application.class, args);
 	}
 
 	@Bean
-    public HttpMessageConverter<Object> httpMessageConverter() {
-        return new MappingJackson2HttpMessageConverter();
-    }
+	public HttpMessageConverter<Object> httpMessageConverter() {
+		return new MappingJackson2HttpMessageConverter();
+	}
 }
